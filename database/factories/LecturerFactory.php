@@ -41,9 +41,7 @@ class LecturerFactory extends Factory
             'title' => fake()->randomElement($titles),
             'room' => fake()->numberBetween(101, 599),
             'departments' => $selectedDepartments,
-            'image' => 'lecturer' . fake()->numberBetween(1, 20),
-            'image_type' => fake()->randomElement(['jpg', 'png']),
-            'image_size' => fake()->numberBetween(50, 500) . 'KB',
+            'image' => 'lecturer' . fake()->numberBetween(1, 20) . '.' . fake()->randomElement(['jpg', 'png']),
         ];
     }
 }

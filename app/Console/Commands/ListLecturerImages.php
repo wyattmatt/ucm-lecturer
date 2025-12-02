@@ -38,7 +38,7 @@ class ListLecturerImages extends Command
         foreach ($lecturers as $lecturer) {
             $table[] = [
                 'Name' => $lecturer->name,
-                'Image File' => $lecturer->image . '.' . $lecturer->image_type,
+                'Image File' => $lecturer->image,
                 'Room' => $lecturer->room,
                 'Departments' => implode(', ', $lecturer->departments),
             ];

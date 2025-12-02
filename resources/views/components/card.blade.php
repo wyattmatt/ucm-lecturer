@@ -1,11 +1,11 @@
 <div class="lecturer-card bg-white rounded-xl shadow-lg overflow-hidden">
     <!-- Photo Profile -->
     <div class="relative bg-gray-200 overflow-hidden flex items-center justify-center" style="height: 20vh; padding: 1.5vh; flex-shrink: 0;">
-        <img src="{{ $lecturer->image_path }}"
+        <img src="{{ $lecturer->image_path ?? asset('images/placeholder.png') }}"
             alt="{{ $lecturer->name }}"
             class="object-cover rounded-full"
             style="width: 16vh; height: 16vh; object-position: center 20%;"
-            onerror="this.src='{{ asset('images/lecturers/placeholder.png') }}'">
+            onerror="this.src='{{ asset('images/placeholder.png') }}'">
     </div>
 
     <!-- Card Content -->

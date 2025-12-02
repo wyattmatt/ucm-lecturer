@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Lecturer extends Model
+class Event extends Model
 {
     use HasFactory;
 
@@ -15,11 +15,14 @@ class Lecturer extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'title',
-        'room',
-        'departments',
         'image',
+        'description',
+        'start_date',
+        'start_time',
+        'end_date',
+        'end_time',
+        'modified_by',
     ];
 
     /**
@@ -32,44 +35,34 @@ class Lecturer extends Model
     ];
 
     /**
-     * The attributes that should be cast.
+     * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'departments' => 'array',
+            'start_date' => 'date',
+            'end_date' => 'date',
         ];
     }
 
     /**
-     * Get the full image path
+     * Get the user who last modified this event.
      */
-    public function getImagePathAttribute(): string
+    public function modifier()
     {
-        if ($this->image) {
-            return asset("images/lecturers/{$this->image}");
-        }
-        return asset('images/placeholder.png');
+        return $this->belongsTo(User::class, 'modified_by');
     }
 
     /**
-     * Get the image URL (alias for image_path)
+     * Get the image URL
      */
     public function getImageUrlAttribute(): ?string
     {
         if ($this->image) {
-            return asset("images/lecturers/{$this->image}");
+            return asset("images/events/{$this->image}");
         }
         return null;
-    }
-
-    /**
-     * Get departments as comma-separated string
-     */
-    public function getDepartmentsStringAttribute(): string
-    {
-        return implode(', ', $this->departments ?? []);
     }
 }

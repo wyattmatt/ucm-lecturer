@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('images/fav.png') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=poppins:400,500,600,700" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
@@ -34,11 +35,14 @@
 
             $slides = [];
             $slideIndex = 0;
+
+            // Add lecturer slides
             foreach ($departments as $dept) {
                 if ($lecturersByDept[$dept]->count() > 0) {
                     $chunks = $lecturersByDept[$dept]->chunk(6);
                     foreach ($chunks as $chunkIndex => $chunk) {
                         $slides[] = [
+                            'type' => 'lecturer',
                             'department' => $dept,
                             'lecturers' => $chunk,
                             'index' => $slideIndex++
@@ -46,26 +50,53 @@
                     }
                 }
             }
+
+            // Add event slides (one event per slide)
+            foreach ($events as $event) {
+                $slides[] = [
+                    'type' => 'event',
+                    'event' => $event,
+                    'index' => $slideIndex++
+                ];
+            }
             @endphp
 
             @foreach($slides as $slide)
-            <div class="department-slide {{ $slide['index'] === 0 ? 'active' : '' }}"
-                data-department="{{ $slide['department'] }}"
-                data-index="{{ $slide['index'] }}">
+                @if($slide['type'] === 'lecturer')
+                    {{-- Lecturer Slide --}}
+                    <div class="department-slide {{ $slide['index'] === 0 ? 'active' : '' }}"
+                        data-department="{{ $slide['department'] }}"
+                        data-index="{{ $slide['index'] }}">
 
-                <div class="text-center mb-[2vh]">
-                    <h1 class="font-bold text-white" style="font-size: 3vw; margin-top: 6vh;">
-                        {{ $slide['department'] }}
-                    </h1>
-                </div>
+                        <div class="text-center mb-[2vh]">
+                            <h1 class="font-bold text-white" style="font-size: 3vw; margin-top: 6vh;">
+                                {{ $slide['department'] }}
+                            </h1>
+                        </div>
 
-                <div class="grid grid-cols-3 gap-[1.5vw] mx-auto" style="max-width: 85vw;">
-                    @foreach($slide['lecturers'] as $lecturer)
-                    <x-card :lecturer="$lecturer" />
-                    @endforeach
-                </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw] mx-auto" style="max-width: 85vw;">
+                            @foreach($slide['lecturers'] as $lecturer)
+                            <x-card :lecturer="$lecturer" />
+                            @endforeach
+                        </div>
+                    </div>
+                @else
+                    {{-- Event Slide --}}
+                    <div class="department-slide {{ $slide['index'] === 0 ? 'active' : '' }}"
+                        data-department="Event"
+                        data-index="{{ $slide['index'] }}">
 
-            </div>
+                        <div class="text-center mb-[4vh]">
+                            <h1 class="font-bold text-white" style="font-size: 3vw; margin-top: 6vh;">
+                                Upcoming Event
+                            </h1>
+                        </div>
+
+                        <div class="flex justify-center items-center" style="min-height: 60vh;">
+                            <x-events :event="$slide['event']" />
+                        </div>
+                    </div>
+                @endif
             @endforeach
 
         </div>
