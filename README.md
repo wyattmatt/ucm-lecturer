@@ -1,59 +1,307 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# UCM Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive web application for managing university lecturers, events, and administrative users. Built with Laravel 12 and Tailwind CSS, this system provides a public-facing directory of lecturers and upcoming events, along with a secure admin panel for content management.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Public Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   **Lecturer Directory**: Browse and search through university lecturers with their profiles, including photos, titles, room numbers, and department affiliations
+-   **Events Calendar**: View upcoming university events with detailed information (title, description, dates, times, and images)
+-   **Real-time Updates**: Automatic polling for new data without page refresh
+-   **Responsive Design**: Mobile-friendly interface built with Tailwind CSS
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Admin Features
 
-## Learning Laravel
+-   **Dashboard**: Overview statistics showing total events, upcoming events, lecturers, and users
+-   **Lecturer Management**: Full CRUD operations for lecturer profiles
+    -   Add/edit/delete lecturers
+    -   Upload and manage lecturer photos
+    -   Manage multiple department affiliations
+-   **Event Management**: Complete event lifecycle management
+    -   Create and schedule events with date/time ranges
+    -   Upload event images
+    -   Track modification history
+-   **User Management**: Manage admin users and roles
+-   **Session-based Authentication**: Secure login system with role-based access control
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### API Endpoints
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+-   Public API for lecturers and events data
+-   Protected API endpoints for authenticated operations
+-   RESTful resource controllers
 
-## Laravel Sponsors
+## Tech Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+-   **Backend**: Laravel 12 (PHP 8.2+)
+-   **Frontend**: Tailwind CSS 4.0, Vite, Axios
+-   **Database**: SQLite (default) / MySQL / PostgreSQL
+-   **Authentication**: Laravel's built-in authentication
+-   **Asset Pipeline**: Vite with Laravel integration
 
-### Premium Partners
+## Requirements
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   PHP 8.2 or higher
+-   Composer
+-   Node.js 18+ and npm
+-   SQLite extension (or MySQL/PostgreSQL)
 
-## Contributing
+## Installation
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Quick Setup
 
-## Code of Conduct
+The project includes a convenient setup script:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+composer setup
+```
 
-## Security Vulnerabilities
+This command will:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Install PHP dependencies
+2. Create `.env` file from `.env.example`
+3. Generate application key
+4. Run database migrations
+5. Install Node.js dependencies
+6. Build frontend assets
+
+### Manual Setup
+
+If you prefer to set up manually:
+
+1. **Clone the repository**
+
+    ```bash
+    git clone https://github.com/wyattmatt/ucm-lecturer.git
+    cd ucm-lecturer
+    ```
+
+2. **Install PHP dependencies**
+
+    ```bash
+    composer install
+    ```
+
+3. **Environment configuration**
+
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+
+4. **Database setup**
+
+    ```bash
+    # Create SQLite database (if using SQLite)
+    touch database/database.sqlite
+
+    # Run migrations
+    php artisan migrate
+    ```
+
+5. **Seed the database** (optional)
+
+    ```bash
+    php artisan db:seed
+    ```
+
+    This creates default admin users:
+
+    - **Super Admin**: superadmin@gmail.com / superadmin
+    - **Admin**: admin@gmail.com / admin
+
+6. **Install Node.js dependencies and build assets**
+    ```bash
+    npm install
+    npm run build
+    ```
+
+## Development
+
+### Running the Development Server
+
+Use the convenient dev script that starts all necessary services:
+
+```bash
+composer dev
+```
+
+This command runs:
+
+-   Laravel development server (http://localhost:8000)
+-   Queue worker
+-   Log viewer (Laravel Pail)
+-   Vite dev server (for hot module replacement)
+
+### Manual Development Commands
+
+Alternatively, run services individually:
+
+```bash
+# Start Laravel server
+php artisan serve
+
+# Watch and compile assets
+npm run dev
+
+# Run queue worker (if needed)
+php artisan queue:listen
+```
+
+## Database Structure
+
+### Tables
+
+**lecturers**
+
+-   `id`: Primary key
+-   `name`: Lecturer's full name
+-   `title`: Academic title/position
+-   `room`: Office/room number
+-   `departments`: JSON array of department affiliations
+-   `image`: Lecturer photo filename
+-   `timestamps`: Created and updated timestamps
+
+**events**
+
+-   `id`: Primary key
+-   `title`: Event title
+-   `image`: Event image filename
+-   `description`: Event description (text)
+-   `start_date` / `start_time`: Event start datetime
+-   `end_date` / `end_time`: Event end datetime
+-   `modified_by`: Foreign key to users table
+-   `timestamps`: Created and updated timestamps
+
+**users**
+
+-   `id`: Primary key
+-   `name`: User's full name
+-   `email`: Login email (unique)
+-   `password`: Hashed password
+-   `role`: User role (admin, superadmin)
+-   `remember_token`: For "remember me" functionality
+-   `timestamps`: Created and updated timestamps
+
+## File Upload Structure
+
+Images are stored in the `public/images/` directory:
+
+-   `public/images/lecturers/`: Lecturer profile photos
+-   `public/images/events/`: Event images
+-   `public/images/building/`: Building/location photos
+
+Image filenames are automatically generated based on the lecturer name or event title (sanitized, lowercase, with underscores).
+
+## Routes
+
+### Web Routes
+
+-   `GET /` - Public lecturer directory
+-   `GET /login` - Login page
+-   `POST /login` - Handle login
+-   `POST /logout` - Handle logout
+
+### Admin Routes (Protected)
+
+-   `GET /admin/dashboard` - Admin dashboard
+-   `GET /admin/events` - Events management
+-   `GET /admin/lecturers` - Lecturers management
+-   `GET /admin/users` - Users management
+
+### API Routes
+
+-   `GET /api/public/events` - Get all events (public)
+-   `GET /api/public/lecturers` - Get all lecturers (public)
+-   `GET /api/public/data` - Get both lecturers and events (public)
+-   Protected API resources for authenticated operations:
+    -   `/api/events` - Event CRUD operations
+    -   `/api/lecturers` - Lecturer CRUD operations
+    -   `/api/users` - User CRUD operations
+
+## Testing
+
+Run the test suite:
+
+```bash
+composer test
+```
+
+Or manually:
+
+```bash
+php artisan test
+```
+
+## Artisan Commands
+
+### Custom Commands
+
+**List Lecturer Images**
+
+```bash
+php artisan lecturers:list-images
+```
+
+Lists all lecturer images in the public directory.
+
+## Configuration
+
+### Database
+
+Edit `.env` to configure your database:
+
+```env
+DB_CONNECTION=sqlite  # or mysql, pgsql
+```
+
+### Session and Cache
+
+The application uses database-backed sessions and cache by default:
+
+```env
+SESSION_DRIVER=database
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+```
+
+## Production Deployment
+
+1. Set environment to production in `.env`:
+
+    ```env
+    APP_ENV=production
+    APP_DEBUG=false
+    ```
+
+2. Optimize the application:
+
+    ```bash
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+    composer install --optimize-autoloader --no-dev
+    ```
+
+3. Build production assets:
+
+    ```bash
+    npm run build
+    ```
+
+4. Set proper permissions:
+    ```bash
+    chmod -R 755 storage bootstrap/cache
+    ```
+
+## Security
+
+-   All admin routes are protected by authentication middleware
+-   Passwords are hashed using Laravel's bcrypt implementation
+-   CSRF protection enabled on all forms
+-   File upload validation for images
+-   Session-based authentication with secure token regeneration
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://github.com/wyattmatt/ucm-lecturer/blob/docs/LICENSE).
