@@ -6,16 +6,15 @@
         <div class="relative h-80 overflow-hidden">
             <img src="{{ asset('images/events/' . $event->image) }}"
                  alt="{{ $event->title }}"
-                 class="w-full h-full object-cover">
+                 class="w-full h-full object-cover"
+                 onerror="this.src='{{ asset('images/placeholder.png') }}'">
             <div class="absolute top-4 right-4 bg-white px-4 py-2 rounded-full shadow-lg">
                 <span class="text-black font-semibold text-lg">{{ \Carbon\Carbon::parse($event->start_date)->format('M d') }}</span>
             </div>
         </div>
     @else
-        <div class="relative h-80 bg-[#1c3a6b] flex items-center justify-center">
-            <svg class="w-32 h-32 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
+        <div class="relative h-80 bg-gradient-to-br from-[#1c3a6b] to-[#0c7c5d] flex items-center justify-center">
+            <i class="bi bi-calendar-event text-white opacity-50" style="font-size: 8rem;"></i>
             <div class="absolute top-4 right-4 bg-white px-4 py-2 rounded-full shadow-lg">
                 <span class="text-black font-semibold text-lg">{{ \Carbon\Carbon::parse($event->start_date)->format('M d') }}</span>
             </div>

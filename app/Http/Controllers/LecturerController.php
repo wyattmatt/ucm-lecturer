@@ -17,7 +17,8 @@ class LecturerController extends Controller
     public function index()
     {
         $lecturers = Lecturer::orderBy('name')->get();
-        $events = Event::where('start_date', '>=', now())
+        $events = Event::whereDate('start_date', '<=', now()->toDateString())
+            ->whereDate('end_date', '>=', now()->toDateString())
             ->orderBy('start_date', 'asc')
             ->get();
 
@@ -39,7 +40,8 @@ class LecturerController extends Controller
     public function apiData()
     {
         $lecturers = Lecturer::orderBy('name')->get();
-        $events = Event::where('start_date', '>=', now())
+        $events = Event::whereDate('start_date', '<=', now()->toDateString())
+            ->whereDate('end_date', '>=', now()->toDateString())
             ->orderBy('start_date', 'asc')
             ->get();
 

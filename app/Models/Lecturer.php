@@ -29,6 +29,7 @@ class Lecturer extends Model
      */
     protected $appends = [
         'image_url',
+        'image_path',
     ];
 
     /**

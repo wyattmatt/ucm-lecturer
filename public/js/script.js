@@ -1,5 +1,5 @@
 // Configuration
-const POLLING_INTERVAL = 30000; // 30 seconds (change this value to adjust polling frequency)
+const POLLING_INTERVAL = 30000; // 30 second (change this value to adjust polling frequency)
 const SLIDE_INTERVAL = 7000; // 7 seconds per slide
 
 let currentSlideIndex = 0;
@@ -7,6 +7,7 @@ let slides = document.querySelectorAll(".department-slide");
 let totalSlides = slides.length;
 let slideTimer = null;
 let cachedData = { lecturers: [], events: [] };
+let pendingRefresh = false; // Flag to track if refresh is needed
 
 function showSlide(index) {
     slides.forEach((slide, i) => {
@@ -23,6 +24,15 @@ function showSlide(index) {
 function nextSlide() {
     currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
     showSlide(currentSlideIndex);
+
+    // If we're back at the first slide and there's a pending refresh
+    if (currentSlideIndex === 0 && pendingRefresh) {
+        console.log("Back to first slide, applying pending refresh...");
+        stopSlideshow();
+        rebuildCarousel(cachedData);
+        pendingRefresh = false;
+        startSlideshow();
+    }
 }
 
 function startSlideshow() {
@@ -159,26 +169,37 @@ function createLecturerSlide(dept, lecturers, index) {
 
 // Create lecturer card HTML
 function createLecturerCard(lecturer) {
-    const imagePath = lecturer.image
-        ? `/images/lecturers/${lecturer.image}`
-        : "/images/placeholder.png";
-
-    const deptList = lecturer.departments
-        .map((dept) => `<li>${dept}</li>`)
-        .join("");
+    const imagePath = lecturer.image_path || "/images/placeholder.png";
 
     return `
-        <div class="card">
-            <div class="image-container">
-                <img src="${imagePath}" alt="${
-        lecturer.name
-    }" class="lecturer-image">
+        <div class="lecturer-card bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Photo Profile -->
+            <div class="relative bg-gray-200 overflow-hidden flex items-center justify-center" style="height: 20vh; padding: 1.5vh; flex-shrink: 0;">
+                <img src="${imagePath}"
+                    alt="${lecturer.name}"
+                    class="object-cover rounded-full"
+                    style="width: 16vh; height: 16vh; object-position: center 20%;"
+                    onerror="this.src='/images/placeholder.png'">
             </div>
-            <div class="content">
-                <p class="text-name">${lecturer.name}</p>
-                <p class="text-title">${lecturer.title}</p>
-                <p class="text-room">Room: ${lecturer.room || "N/A"}</p>
-                <ul class="text-department">${deptList}</ul>
+
+            <!-- Card Content -->
+            <div class="lecturer-card-content">
+                <div class="lecturer-info">
+                    <!-- Name -->
+                    <h3 class="font-semibold text-gray-900 mb-1" style="font-size: 1.1vw; line-height: 1.3;" align="center">
+                        ${lecturer.name}
+                    </h3>
+
+                    <!-- Title -->
+                    <p class="font-normal text-gray-600 mb-3" style="font-size: 0.8vw; line-height: 1.4;" align="center">
+                        ${lecturer.title}
+                    </p>
+                </div>
+
+                <!-- Room Number (Fixed at bottom) -->
+                <div class="lecturer-room rounded-md font-semibold text-center" style="padding: 0.7vh 0.8vw; background-color: #FF6B00; color: white; font-size: 0.85vw;">
+                    Room ${lecturer.room || "N/A"}
+                </div>
             </div>
         </div>
     `;
@@ -212,12 +233,10 @@ function createEventSlide(event, index) {
 
     const imageHTML = event.image
         ? `
-        <img src="${imagePath}" alt="${event.title}" class="w-full h-full object-cover">
+        <img src="${imagePath}" alt="${event.title}" class="w-full h-full object-cover" onerror="this.src='/images/placeholder.png'">
     `
         : `
-        <svg class="w-32 h-32 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
+        <i class="bi bi-calendar-event text-white opacity-50" style="font-size: 8rem;"></i>
     `;
 
     return `
@@ -231,7 +250,7 @@ function createEventSlide(event, index) {
                 <div class="bg-white rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transition duration-300 transform hover:-translate-y-2" style="max-width: 50vw; width: 100%;">
                     <div class="relative h-80 ${
                         !event.image
-                            ? "bg-[#1c3a6b] to-[#0c7c5d] bg-gradient-to-br"
+                            ? "bg-gradient-to-br from-[#1c3a6b] to-[#0c7c5d] text-white"
                             : ""
                     } flex items-center justify-center overflow-hidden">
                         ${imageHTML}
@@ -262,9 +281,9 @@ function createEventSlide(event, index) {
                                 </span>
                             </div>
                         </div>
-                        // <button class="w-full bg-[#FF6B00] text-white font-semibold py-4 px-6 rounded-lg hover:bg-[#e65a00] transition duration-200 shadow-md hover:shadow-lg text-lg">
-                        //     Learn More
-                        // </button>
+                        <!-- <button class="w-full bg-[#FF6B00] text-white font-semibold py-4 px-6 rounded-lg hover:bg-[#e65a00] transition duration-200 shadow-md hover:shadow-lg text-lg">
+                            Learn More
+                        </button> -->
                     </div>
                 </div>
             </div>
@@ -286,10 +305,10 @@ async function pollData() {
     const newData = await fetchData();
 
     if (newData && hasDataChanged(newData)) {
-        console.log("Data changed, rebuilding carousel...");
-        stopSlideshow();
-        rebuildCarousel(newData);
-        startSlideshow();
+        console.log("Data changed detected, will refresh at next cycle...");
+        // Store new data but don't rebuild immediately
+        cachedData = newData;
+        pendingRefresh = true;
     }
 }
 
